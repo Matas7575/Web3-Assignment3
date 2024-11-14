@@ -1,5 +1,8 @@
 <template>
-  <div id="play-hand">
+  <div v-if="gameOver">
+    <h2>Game Over! Winner: {{ winner }}</h2>
+  </div>
+  <div v-else id="play-hand">
     <h2 v-if="players.length">
       Current Turn: {{ players[currentTurn]?.name }}
     </h2>
@@ -23,10 +26,6 @@
     </div>
 
     <h3 v-if="topCard">Top of the Pile: {{ topCard }}</h3>
-
-    <div v-if="gameOver">
-      <h2>Game Over! Winner: {{ winner }}</h2>
-    </div>
   </div>
 </template>
 
