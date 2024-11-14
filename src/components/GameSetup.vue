@@ -7,7 +7,7 @@
 
     <div v-if="lobbyCode">
       <p>Lobby Code: {{ lobbyCode }}</p>
-      <p>Players: {{ players.join(", ") }}</p>
+      <p>Players: {{ players.map((player) => player.name).join(", ") }}</p>
       <button v-if="players.length >= 2" @click="startGame">Start Game</button>
     </div>
   </div>
@@ -34,7 +34,14 @@ export default {
         }
       );
       this.lobbyCode = response.data.lobbyCode;
-      this.players = [localStorage.getItem("username")];
+      this.players = [{ name: localStorage.getItem("username") }];
+
+      // Join the socket room for the lobby
+      this.socket.emit(
+        "joinGame",
+        this.lobbyCode,
+        localStorage.getItem("username")
+      );
     },
     async joinLobby() {
       const response = await axios.post(
@@ -74,6 +81,9 @@ export default {
       } else {
         console.log("Game not started yet.");
       }
+    });
+    this.socket.on("playerListUpdate", (players) => {
+      this.players = players;
     });
   },
 };
